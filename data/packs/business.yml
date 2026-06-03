@@ -1,0 +1,92 @@
+id: "biz.communication"
+name: "Business Communication"
+version: "0.1.0"
+description: "Professional email templates and responses"
+
+vars:
+  name: "Gostev"
+  company: "Your Company"
+  phone: "555-0100"
+  email: "gostev@example.com"
+
+triggers:
+  - key: ";greet"
+    label: "Professional greeting"
+    action:
+      type: "text"
+      template: |
+        Dear [Name],
+        
+        I hope this email finds you well.
+  
+  - key: ";thanks"
+    label: "Thank you response"
+    action:
+      type: "text"
+      template: |
+        Thank you for reaching out. I appreciate your interest and will review your message shortly.
+        
+        I'll get back to you within 24 hours with a detailed response.
+  
+  - key: ";meeting"
+    label: "Meeting request"
+    action:
+      type: "text"
+      template: |
+        I would like to schedule a meeting to discuss [topic].
+        
+        Would you be available for a 30-minute call this week? Here are a few time slots that work for me:
+        - [Day] at [Time]
+        - [Day] at [Time]
+        - [Day] at [Time]
+        
+        Please let me know what works best for your schedule.
+  
+  - key: ";followup"
+    label: "Follow-up email"
+    action:
+      type: "text"
+      template: |
+        I wanted to follow up on our previous conversation regarding [topic].
+        
+        Have you had a chance to review the information I sent? I'm happy to answer any questions you might have.
+  
+  - key: ";decline"
+    label: "Polite decline"
+    action:
+      type: "text"
+      template: |
+        Thank you for considering me for this opportunity.
+        
+        After careful consideration, I've decided that this isn't the right fit for me at this time. I appreciate your understanding and wish you the best in finding the right solution.
+  
+  - key: ";intro"
+    label: "Self introduction"
+    action:
+      type: "text"
+      template: |
+        My name is {{vars.name}} and I'm reaching out from {{vars.company}}.
+        
+        I'm contacting you regarding [purpose].
+  
+  - key: ";avail"
+    label: "Availability response"
+    action:
+      type: "text"
+      template: |
+        I'm generally available:
+        - Monday-Friday: 9 AM - 5 PM EST
+        - Best times for calls: 10 AM - 12 PM, 2 PM - 4 PM
+        
+        Please let me know what works best for you.
+  
+  - key: ";sig"
+    label: "Email signature"
+    action:
+      type: "text"
+      template: |
+        Best regards,
+        {{vars.name}}
+        {{vars.company}}
+        Email: {{vars.email}}
+        Phone: {{vars.phone}}

@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  typeonce-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: typeonce-api
+    restart: unless-stopped
+    ports:
+      - "8091:8090"
+    volumes:
+      - ./data/packs:/app/packs
+      - ./data/logs:/app/logs
+      - ./data/config:/app/config
+    environment:
+      - NODE_ENV=production
+      - API_PORT=8090
+      - PACK_DIR=/app/packs
+      - LOG_LEVEL=info
+    networks:
+      - typeonce-network
+
+networks:
+  typeonce-network:
+    driver: bridge

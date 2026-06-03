@@ -1,0 +1,91 @@
+id: "dev.toolkit"
+name: "Developer Toolkit"
+version: "0.1.0"
+description: "Common development snippets and commands"
+
+vars:
+  author: "Gostev"
+  project: "TypeOnce"
+
+triggers:
+  - key: ";log"
+    label: "Console log statement"
+    action:
+      type: "text"
+      template: "console.log('DEBUG: ', );"
+
+  - key: ";try"
+    label: "Try-catch block"
+    action:
+      type: "text"
+      template: |
+        try {
+
+        } catch (error) {
+          console.error('Error:', error);
+        }
+
+  - key: ";func"
+    label: "JavaScript function"
+    action:
+      type: "text"
+      template: |
+        function functionName(params) {
+          // Implementation
+          return result;
+        }
+
+  - key: ";async"
+    label: "Async function"
+    action:
+      type: "text"
+      template: |
+        async function functionName() {
+          try {
+            const result = await
+            return result;
+          } catch (error) {
+            console.error(error);
+          }
+        }
+
+  - key: ";fetch"
+    label: "Fetch API call"
+    action:
+      type: "text"
+      template: |
+        fetch('https://api.example.com/endpoint')
+          .then(response => response.json())
+          .then(data => console.log(data))
+          .catch(error => console.error('Error:', error));
+
+  - key: ";gitcom"
+    label: "Git commit with message"
+    action:
+      type: "text"
+      template: "git add . && git commit -m 'feat: '"
+
+  - key: ";gitpush"
+    label: "Git push to origin"
+    action:
+      type: "text"
+      template: "git push origin main"
+
+  - key: ";docker"
+    label: "Docker ps formatted"
+    action:
+      type: "text"
+      raw: true
+      template: "docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
+
+  - key: ";npm"
+    label: "NPM install and save"
+    action:
+      type: "text"
+      template: "npm install --save "
+
+  - key: ";todo"
+    label: "TODO comment"
+    action:
+      type: "text"
+      template: "// TODO: {{date}} - "

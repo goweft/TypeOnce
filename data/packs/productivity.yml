@@ -1,0 +1,84 @@
+id: "prod.shortcuts"
+name: "Productivity Shortcuts"
+version: "0.1.0"
+description: "Quick productivity boosters and templates"
+
+triggers:
+  - key: ";task"
+    label: "Task template"
+    action:
+      type: "text"
+      template: "[ ] Task: [DESCRIPTION] | Due: [DATE] | Priority: [1-5]"
+  
+  - key: ";note"
+    label: "Quick note"
+    action:
+      type: "text"
+      template: |
+        📝 Note - {{datetime}}
+        Topic: 
+        Details: 
+        Action items:
+  
+  - key: ";week"
+    label: "Weekly plan template"
+    action:
+      type: "text"
+      template: |
+        Week of {{date}}
+        
+        Monday:
+        - [ ] 
+        
+        Tuesday:
+        - [ ] 
+        
+        Wednesday:
+        - [ ] 
+        
+        Thursday:
+        - [ ] 
+        
+        Friday:
+        - [ ] 
+  
+  - key: ";report"
+    label: "Status report"
+    action:
+      type: "text"
+      template: |
+        Status Report - {{date}}
+        
+        Completed:
+        • 
+        
+        In Progress:
+        • 
+        
+        Blocked:
+        • 
+        
+        Next Steps:
+        • 
+  
+  - key: ";idea"
+    label: "Idea capture"
+    action:
+      type: "text"
+      template: |
+        💡 IDEA: 
+        Context: 
+        Potential impact: 
+        Next action: 
+        Captured: {{datetime}}
+  
+  - key: ";focus"
+    label: "Focus block"
+    action:
+      type: "text"
+      template: |
+        🎯 FOCUS BLOCK
+        Time: {{time}} - [END TIME]
+        Task: 
+        Goal: 
+        Distractions off: ✓

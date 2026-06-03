@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Secrets / environment
+.env
+.env.local
+.env.*.local
+
+# Logs & runtime state
+*.log
+data/logs/
+data/config/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temp
+tmp/
+temp/
+*.tmp

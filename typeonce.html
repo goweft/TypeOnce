@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TypeOnce Web</title>
+  <style>
+    body { font-family: monospace; max-width: 650px; margin: 40px auto; }
+    input, button { padding: 10px; margin: 5px; }
+    #result { background: #f0f0f0; padding: 10px; margin-top: 20px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>TypeOnce Text Expander</h1>
+  <input type="text" id="trigger" placeholder="Enter trigger (e.g., ;date)" style="width: 320px;">
+  <button onclick="expand()">Expand</button>
+  <div id="result"></div>
+
+  <h3>Available Triggers</h3>
+  <ul id="triggers"></ul>
+
+  <script>
+    // Use the same-host reverse-proxy path served by nginx:
+    const API = '/typeonce';
+
+    async function expand() {
+      const trigger = document.getElementById('trigger').value;
+      try {
+        const r = await fetch(\`\${API}/expand\`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ trigger })
+        });
+        const data = await r.json();
+        document.getElementById('result').innerText =
+          data.success ? data.result : (data.error || 'Trigger not found');
+      } catch (err) {
+        document.getElementById('result').innerText = 'Error: ' + err.message;
+      }
+    }
+
+    async function loadTriggers() {
+      try {
+        const r = await fetch(\`\${API}/triggers\`);
+        const triggers = await r.json();
+        document.getElementById('triggers').innerHTML =
+          triggers.map(t => \`<li>\${t.key} — \${t.label || ''}</li>\`).join('');
+      } catch (err) {
+        console.error('Failed to load triggers:', err);
+      }
+    }
+    loadTriggers();
+  </script>
+</body>
+</html>

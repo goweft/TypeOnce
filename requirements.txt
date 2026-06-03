@@ -1,0 +1,2 @@
+# We don't actually need Python deps for the Node.js app
+# Removing to avoid Docker build issues

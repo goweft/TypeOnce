@@ -1,0 +1,81 @@
+id: "it.support"
+name: "IT Support"
+version: "0.1.0"
+description: "Common IT support responses and troubleshooting steps"
+
+triggers:
+  - key: ";restart"
+    label: "Restart instruction"
+    action:
+      type: "text"
+      template: "Please try restarting your computer and let me know if the issue persists."
+  
+  - key: ";clear"
+    label: "Clear cache instructions"
+    action:
+      type: "text"
+      template: |
+        To clear your browser cache:
+        1. Press Ctrl+Shift+Delete (Windows) or Cmd+Shift+Delete (Mac)
+        2. Select "Cached images and files"
+        3. Choose time range "All time"
+        4. Click "Clear data"
+  
+  - key: ";ticket"
+    label: "Ticket received"
+    action:
+      type: "text"
+      template: |
+        Ticket #[NUMBER] received.
+        
+        Issue: [DESCRIPTION]
+        Priority: [HIGH/MEDIUM/LOW]
+        
+        I'll begin investigating this issue and will update you within 2 hours.
+  
+  - key: ";resolved"
+    label: "Issue resolved"
+    action:
+      type: "text"
+      template: |
+        The issue has been resolved.
+        
+        Resolution: [DESCRIPTION]
+        
+        Please verify the fix works as expected and let me know if you experience any further issues.
+  
+  - key: ";password"
+    label: "Password reset instructions"
+    action:
+      type: "text"
+      template: |
+        To reset your password:
+        1. Go to the login page
+        2. Click "Forgot Password"
+        3. Enter your email address
+        4. Check your email for reset instructions
+        5. Follow the link to create a new password
+  
+  - key: ";vpn"
+    label: "VPN connection help"
+    action:
+      type: "text"
+      template: |
+        To connect to the VPN:
+        1. Open your VPN client
+        2. Enter server: vpn.company.com
+        3. Username: your email address
+        4. Password: your network password
+        5. Click Connect
+  
+  - key: ";backup"
+    label: "Backup reminder"
+    action:
+      type: "text"
+      template: |
+        Remember to regularly backup your important files:
+        - Documents: Weekly
+        - Projects: Daily
+        - Emails: Monthly
+        
+        Use the company shared drive or approved cloud storage.

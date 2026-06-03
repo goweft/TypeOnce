@@ -1,0 +1,44 @@
+{
+  "name": "typeonce",
+  "version": "0.1.0",
+  "description": "Smart text expansion engine with composable packs",
+  "main": "core/engine.js",
+  "bin": {
+    "typeonce": "./cli/index.js"
+  },
+  "scripts": {
+    "start": "node cli/index.js",
+    "dev": "nodemon cli/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint . --ext .js",
+    "validate": "node cli/index.js validate"
+  },
+  "keywords": [
+    "text-expansion",
+    "snippets",
+    "productivity"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "chalk": "^4.1.2",
+    "cli-table3": "^0.6.5",
+    "clipboardy": "^4.0.0",
+    "commander": "^11.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^5.1.0",
+    "inquirer": "^8.2.6",
+    "js-yaml": "^4.1.0",
+    "mustache": "^4.2.0",
+    "ora": "^5.4.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "nodemon": "^3.0.0",
+    "prettier": "^3.0.0"
+  }
+}

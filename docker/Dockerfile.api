@@ -1,0 +1,17 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY cli/ ./cli/
+COPY core/ ./core/
+COPY server/ ./server/
+COPY packs/ ./packs/
+
+RUN mkdir -p /app/data/packs /app/data/logs /app/data/config
+
+EXPOSE 8090
+
+CMD ["node", "server/index.js"]
