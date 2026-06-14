@@ -1,10 +1,23 @@
 #!/usr/bin/env node
-const { program } = require('commander');
+const { program, InvalidArgumentError } = require('commander');
 const path = require('path');
 const fs = require('fs');
 const yaml = require('js-yaml');
 const ExpansionEngine = require('../core/engine');
 const PackParser = require('../core/parser');
+const InputHandler = require('../core/input');
+
+// Accumulate repeatable `--input key=value` flags into an object.
+function collectInput(value, previous) {
+  const eq = value.indexOf('=');
+  if (eq === -1) {
+    // InvalidArgumentError makes commander print a clean message + exit 1
+    // instead of dumping a stack trace.
+    throw new InvalidArgumentError(`Invalid --input '${value}', expected key=value`);
+  }
+  previous[value.slice(0, eq)] = value.slice(eq + 1);
+  return previous;
+}
 
 // Canonical pack set lives in data/packs (overridable via PACK_DIR). This is the
 // same set the API and tests use, so collisions like ;sig / ;docker are present
@@ -58,9 +71,19 @@ program
 program
   .command('expand <trigger>')
   .description('Expand a trigger (uses the active profile)')
-  .action((trigger) => {
+  .option('-i, --input <key=value>', 'provide an input value (repeatable)', collectInput, {})
+  .action(async (trigger, options) => {
     applyActiveProfile();
-    const result = engine.expand(trigger);
+    // Resolve the trigger first so we can prompt for its declared inputs before
+    // expanding. Values from --input are used as-is; the rest are prompted for
+    // (or fall back to defaults when stdin isn't a TTY, e.g. piped/CI).
+    const resolved = engine.getTrigger(trigger);
+    if (!resolved) {
+      console.error(`Trigger '${trigger}' not found`);
+      process.exit(1);
+    }
+    const inputs = await new InputHandler().collectInputs(resolved, options.input);
+    const result = engine.expand(trigger, { inputs });
     if (result !== null) {
       console.log(result);
     } else {
@@ -183,4 +206,6 @@ program
     }
   });
 
-program.parse();
+// parseAsync so the now-async `expand` action (which awaits input collection)
+// is fully awaited before the process exits.
+program.parseAsync();

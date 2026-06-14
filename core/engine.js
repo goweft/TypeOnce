@@ -154,6 +154,14 @@ class ExpansionEngine extends EventEmitter {
     });
   }
 
+  // Resolve a single trigger to the entry that the active (or passed) profile
+  // would expand — same selection logic as expand(). Callers use this to read a
+  // trigger's declared `inputs` before expanding. Returns null if unresolved.
+  getTrigger(triggerKey, context = {}) {
+    const profileName = this._effectiveProfile(context);
+    return this._pickCandidate(triggerKey.toLowerCase(), profileName);
+  }
+
   getAllTriggers(context = {}) {
     const profileName = this._effectiveProfile(context);
     const result = [];

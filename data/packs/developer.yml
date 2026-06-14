@@ -89,3 +89,18 @@ triggers:
     action:
       type: "text"
       template: "// TODO: {{date}} - "
+
+  - key: ";cmsg"
+    label: "Conventional commit message"
+    inputs:
+      - name: "type"
+        prompt: "Commit type"
+        default: "feat"
+      - name: "scope"
+        prompt: "Scope (optional)"
+        default: ""
+      - name: "message"
+        prompt: "Short description"
+    action:
+      type: "text"
+      template: "{{type}}({{scope}}): {{message}}"
