@@ -21,8 +21,11 @@ function logUsage(trigger, result) {
   fs.appendFileSync(path.join(logDir, 'usage.log'), logEntry);
 }
 
-// Honor PACK_DIR (set in docker-compose); fall back to ../packs.
-const packDir = process.env.PACK_DIR || path.join(__dirname, '..', 'packs');
+// Canonical pack set lives in data/packs (overridable via PACK_DIR, as
+// docker-compose does). This mirrors the CLI default so local `node server/index.js`
+// loads the same packs — and, via profiles.js's `<packDir>/../profiles.yml`
+// fallback, the same data/profiles.yml — instead of the stale legacy ../packs.
+const packDir = process.env.PACK_DIR || path.join(__dirname, '..', 'data', 'packs');
 engine.loadPacks(packDir);
 
 // Activate the boot profile: PROFILE env -> profiles.yml default -> none.
