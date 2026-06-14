@@ -2,6 +2,7 @@ const PackParser = require('./parser');
 const Renderer = require('./renderer');
 const { loadProfiles } = require('./profiles');
 const EventEmitter = require('events');
+const { execSync } = require('child_process');
 
 class ExpansionEngine extends EventEmitter {
   constructor() {
@@ -141,6 +142,17 @@ class ExpansionEngine extends EventEmitter {
     const trigger = this._pickCandidate(triggerKey.toLowerCase(), profileName);
     if (!trigger) return null;
 
+    switch (trigger.action.type || 'text') {
+      case 'text':
+        return this._expandText(trigger, context);
+      case 'script':
+        return this._expandScript(trigger, context);
+      default:
+        throw new Error(`Unknown action type: ${trigger.action.type}`);
+    }
+  }
+
+  _expandText(trigger, context) {
     const template = trigger.action.template;
 
     // raw triggers (e.g. docker --format '{{.Names}}') bypass Mustache entirely
@@ -152,6 +164,24 @@ class ExpansionEngine extends EventEmitter {
       vars: trigger.packVars,
       inputs: context.inputs || {},
     });
+  }
+
+  // Script actions run a shell command and expand to its stdout. The command is
+  // a Mustache template, so packs can interpolate vars/inputs into it. Packs are
+  // user-authored local config (like shell aliases), so the command is trusted.
+  _expandScript(trigger, context) {
+    const command = this.renderer.render(trigger.action.command || '', {
+      vars: trigger.packVars,
+      inputs: context.inputs || {},
+    });
+
+    const output = execSync(command, {
+      encoding: 'utf8',
+      timeout: trigger.action.timeout || 5000,
+    });
+
+    // Trim the trailing newline shells add, unless the pack opts out.
+    return trigger.action.trim === false ? output : output.trim();
   }
 
   // Resolve a single trigger to the entry that the active (or passed) profile

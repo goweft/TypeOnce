@@ -104,3 +104,9 @@ triggers:
     action:
       type: "text"
       template: "{{type}}({{scope}}): {{message}}"
+
+  - key: ";branch"
+    label: "Current git branch (script)"
+    action:
+      type: "script"
+      command: "git branch --show-current"
