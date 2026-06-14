@@ -2,13 +2,52 @@
 const { program } = require('commander');
 const path = require('path');
 const fs = require('fs');
+const yaml = require('js-yaml');
 const ExpansionEngine = require('../core/engine');
+const PackParser = require('../core/parser');
+
+// Canonical pack set lives in data/packs (overridable via PACK_DIR). This is the
+// same set the API and tests use, so collisions like ;sig / ;docker are present
+// and therefore resolvable by profile.
+const packDir = process.env.PACK_DIR || path.join(__dirname, '..', 'data', 'packs');
+const configDir = path.join(__dirname, '..', 'data', 'config');
+const activeProfileFile = path.join(configDir, 'active-profile');
 
 const engine = new ExpansionEngine();
-const packDir = path.join(__dirname, '..', 'packs');
-
 if (fs.existsSync(packDir)) {
   engine.loadPacks(packDir);
+}
+
+// --- active profile persistence ------------------------------------------
+
+function readPersistedProfile() {
+  try {
+    if (fs.existsSync(activeProfileFile)) {
+      const v = fs.readFileSync(activeProfileFile, 'utf8').trim();
+      return v || null;
+    }
+  } catch (_) { /* ignore */ }
+  return null;
+}
+
+function writePersistedProfile(name) {
+  if (!fs.existsSync(configDir)) fs.mkdirSync(configDir, { recursive: true });
+  fs.writeFileSync(activeProfileFile, `${name}\n`);
+}
+
+// Resolution order: PROFILE env -> persisted file -> profiles.yml default -> none.
+function resolveProfileName() {
+  if (process.env.PROFILE) return process.env.PROFILE;
+  const persisted = readPersistedProfile();
+  if (persisted) return persisted;
+  if (engine.profileManager && engine.profileManager.default) {
+    return engine.profileManager.default;
+  }
+  return null;
+}
+
+function applyActiveProfile() {
+  engine.setActiveProfile(resolveProfileName());
 }
 
 program
@@ -18,10 +57,11 @@ program
 
 program
   .command('expand <trigger>')
-  .description('Expand a trigger')
+  .description('Expand a trigger (uses the active profile)')
   .action((trigger) => {
+    applyActiveProfile();
     const result = engine.expand(trigger);
-    if (result) {
+    if (result !== null) {
       console.log(result);
     } else {
       console.error(`Trigger '${trigger}' not found`);
@@ -31,22 +71,114 @@ program
 
 program
   .command('list')
-  .description('List all available triggers')
+  .description('List available triggers (filtered by the active profile)')
   .action(() => {
+    applyActiveProfile();
+    const active = engine.getActiveProfileName();
+    if (active) console.error(`profile: ${active}`);
     const triggers = engine.getAllTriggers();
-    triggers.forEach(trigger => {
-      console.log(`${trigger.key.padEnd(15)} ${trigger.label || ''}`);
+    triggers.forEach((trigger) => {
+      console.log(`${trigger.key.padEnd(15)} ${trigger.label || ''} [${trigger.packId}]`);
     });
+  });
+
+// --- profile command group -----------------------------------------------
+
+const profileCmd = program
+  .command('profile')
+  .description('Manage role-based profiles');
+
+profileCmd
+  .command('list')
+  .description('List profiles, their packs, and which is default/active')
+  .action(() => {
+    const profiles = engine.listProfiles();
+    if (profiles.length === 0) {
+      console.log('No profiles configured (all packs eligible).');
+      return;
+    }
+    const active = resolveProfileName();
+    profiles.forEach((p) => {
+      const flags = [];
+      if (p.isDefault) flags.push('default');
+      if (p.name === active) flags.push('active');
+      const suffix = flags.length ? ` (${flags.join(', ')})` : '';
+      console.log(`${p.name}${suffix}`);
+      if (p.description) console.log(`  ${p.description}`);
+      console.log(`  packs: ${p.packs.join(', ')}`);
+    });
+  });
+
+profileCmd
+  .command('use <name>')
+  .description('Set the active profile (persisted to data/config/active-profile)')
+  .action((name) => {
+    if (engine.profileManager && !engine.profileManager.getProfile(name)) {
+      console.error(`Unknown profile '${name}'. Run 'typeonce profile list'.`);
+      process.exit(1);
+    }
+    writePersistedProfile(name);
+    console.log(`Active profile set to '${name}'`);
+  });
+
+profileCmd
+  .command('current')
+  .description('Print the active profile')
+  .action(() => {
+    const name = resolveProfileName();
+    console.log(name || '(none — all packs eligible)');
   });
 
 program
   .command('validate')
-  .description('Validate all packs')
+  .description('Validate all packs (and profile references)')
   .action(() => {
-    try {
+    let ok = true;
+    const parser = new PackParser();
+
+    if (!fs.existsSync(packDir)) {
+      console.error(`Pack directory not found: ${packDir}`);
+      process.exit(1);
+    }
+
+    const files = fs
+      .readdirSync(packDir)
+      .filter((f) => f.endsWith('.yml') || f.endsWith('.yaml'));
+    const knownPackIds = new Set();
+
+    for (const file of files) {
+      const full = path.join(packDir, file);
+      try {
+        const pack = yaml.load(fs.readFileSync(full, 'utf8'));
+        const v = parser.validatePack(pack);
+        if (!v.valid) {
+          ok = false;
+          console.error(`✗ ${file}: ${v.errors.join(', ')}`);
+        } else {
+          knownPackIds.add(pack.id);
+          console.log(`✓ ${file} — ${pack.id} (${pack.triggers.length} triggers)`);
+        }
+      } catch (error) {
+        ok = false;
+        console.error(`✗ ${file}: ${error.message}`);
+      }
+    }
+
+    // Validate that profiles reference packs that actually exist.
+    const profiles = engine.listProfiles();
+    for (const p of profiles) {
+      for (const packId of p.packs) {
+        if (!knownPackIds.has(packId)) {
+          ok = false;
+          console.error(`✗ profile '${p.name}' references unknown pack id: ${packId}`);
+        }
+      }
+    }
+
+    if (ok) {
       console.log('All packs are valid');
-    } catch (error) {
-      console.error('Validation failed:', error.message);
+    } else {
+      console.error('Validation failed');
       process.exit(1);
     }
   });

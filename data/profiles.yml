@@ -1,0 +1,22 @@
+# Role-based profiles. Each profile activates a subset of packs (by pack `id`),
+# so the same trigger can resolve differently per context. Profiles are designed
+# to be internally collision-free: e.g. `work` gets ;sig from biz.communication,
+# while `personal` gets it from typeonce.essentials.
+#
+# ai.prompts (the ;ai* Claude prompt templates) collides with nothing, so it's
+# listed in every profile to keep those prompts available in any context.
+#
+# With no profile active (PROFILE unset and this file absent), all packs are
+# eligible and behavior is identical to the pre-profiles engine.
+default: work
+
+profiles:
+  work:
+    description: Work / IT
+    packs: [biz.communication, it.support, dev.toolkit, prod.shortcuts, ai.prompts]
+  personal:
+    description: Personal
+    packs: [personal.quick, custom.personal, typeonce.essentials, ai.prompts]
+  ir:
+    description: Incident response
+    packs: [it.support, dev.toolkit, ai.prompts]   # expand as security packs land

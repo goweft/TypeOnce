@@ -11,12 +11,17 @@ services:
       - "8091:8090"
     volumes:
       - ./data/packs:/app/packs
+      - ./data/profiles.yml:/app/data/profiles.yml
       - ./data/logs:/app/logs
       - ./data/config:/app/config
     environment:
       - NODE_ENV=production
       - API_PORT=8090
       - PACK_DIR=/app/packs
+      - PROFILES_FILE=/app/data/profiles.yml
+      # Boot profile. Comment this out (and the profiles mount above) to serve
+      # all packs, i.e. the pre-profiles behavior.
+      - PROFILE=work
       - LOG_LEVEL=info
     networks:
       - typeonce-network

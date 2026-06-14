@@ -19,7 +19,9 @@ class PackParser {
       }
       
       this.packs.set(pack.id, pack);
-      console.log(`Loaded pack: ${pack.name} (${pack.id})`);
+      // Diagnostic chatter on stderr so command stdout (e.g. `expand`) stays clean
+      // for piping/clipboard.
+      console.error(`Loaded pack: ${pack.name} (${pack.id})`);
       return pack;
     } catch (error) {
       console.error(`Failed to load ${packPath}: ${error.message}`);

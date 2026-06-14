@@ -1,0 +1,128 @@
+id: "ai.prompts"
+name: "Claude Prompts"
+version: "0.1.0"
+description: "Reusable Claude prompt templates, expanded inline by TypeOnce"
+
+triggers:
+  - key: ";aireview"
+    label: "Code review prompt"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Review the code below. For each issue give: severity (blocker / major / minor / nit), the exact location, what's wrong, and a concrete fix. Prioritize correctness and security over style. Flag anything you're unsure about instead of guessing, and finish with the top 3 things to fix first.
+
+        ```
+        [paste code]
+        ```
+
+  - key: ";aiexplain"
+    label: "Explain code prompt"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Explain what the code below does, step by step and in plain language. Call out side effects, assumptions, and anything non-obvious. If you spot a likely bug, flag it.
+
+        ```
+        [paste code]
+        ```
+
+  - key: ";aidebug"
+    label: "Debugging prompt"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Help me debug this. Below is the code, what I expected, what actually happens, and any error. List the likely causes from most to least probable, how to confirm each, and the fix for the most likely one.
+
+        Code:
+        ```
+        [paste code]
+        ```
+        Expected: [what should happen]
+        Actual: [what happens]
+        Error: [message / stack trace]
+
+  - key: ";aitest"
+    label: "Write tests prompt"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Write thorough tests for the code below using [framework]. Cover the happy path, edge cases, error conditions, and boundaries. Use descriptive test names; skip trivial cases. Note any behavior that's hard to test and why.
+
+        ```
+        [paste code]
+        ```
+
+  - key: ";airefactor"
+    label: "Refactor prompt"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Refactor the code below for readability and maintainability without changing behavior or the public interface. Explain each change and why. Separate anything that should be a follow-up from this pass.
+
+        ```
+        [paste code]
+        ```
+
+  - key: ";aisec"
+    label: "Security review prompt"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Do a security review of the code/design below. For each finding give the vulnerability class, a plausible attack path, the impact, and the fix; rank by severity. Note trust boundaries and unvalidated input. Skip theoretical issues with no realistic exploit.
+
+        ```
+        [paste code or describe the design]
+        ```
+
+  - key: ";aithreat"
+    label: "Threat model prompt"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Threat-model the system described below. List assets, trust boundaries, and entry points, then enumerate threats using STRIDE with the most likely attack paths and mitigations. Highlight the highest-risk areas to address first.
+
+        System: [describe the system, data flows, and actors]
+
+  - key: ";aicommit"
+    label: "Commit message prompt"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Write a git commit message for the diff below. Concise imperative subject line (<= 72 chars), then a body explaining what changed and why (not how). Use conventional-commit style (feat / fix / refactor / etc.) if it fits.
+
+        ```
+        [paste diff]
+        ```
+
+  - key: ";aisum"
+    label: "Summarize prompt"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Summarize the text below, leading with the single most important takeaway, then the key points as short bullets. Preserve important numbers, names, and caveats. Flag anything asserted but unsupported.
+
+        ```
+        [paste text]
+        ```
+
+  - key: ";aiprompt"
+    label: "Improve-a-prompt prompt"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Improve the prompt below so an LLM gives more reliable, useful results. Make the goal explicit, add constraints and the desired output format, and include a short example if it helps. Give the rewritten prompt, then one line on what you changed.
+
+        Prompt:
+        ```
+        [paste your prompt]
+        ```
