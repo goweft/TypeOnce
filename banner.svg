@@ -1,0 +1,58 @@
+<svg width="1280" viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg">
+
+<!-- card -->
+<rect x="0.5" y="0.5" width="679" height="219" rx="12" fill="#F6F1E6" stroke="#E4D8C2" stroke-width="1"/>
+
+<!-- ── ILLUSTRATION : trigger (type once) → expansion (everywhere) ──── -->
+<g transform="translate(28, 22)">
+
+  <!-- pack stack behind the trigger (composable YAML packs) -->
+  <rect x="15" y="63" width="94" height="38" rx="6" fill="#ECE5D4" stroke="#D8CDB6" stroke-width="1" opacity="0.5"/>
+  <rect x="10" y="57" width="94" height="38" rx="6" fill="#ECE5D4" stroke="#D8CDB6" stroke-width="1" opacity="0.8"/>
+
+  <!-- Panel 1: the short trigger you type -->
+  <rect x="4" y="51" width="94" height="38" rx="6" fill="#F7F2E8" stroke="#D8CDB6" stroke-width="1"/>
+  <!-- amber active-trigger edge -->
+  <rect x="4" y="51" width="3" height="38" rx="1.5" fill="#E2B86A" opacity="0.95"/>
+  <!-- trigger text + caret -->
+  <text x="18" y="75" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="15" fill="#8a6a36">;sig</text>
+  <rect x="49" y="63" width="2.5" height="15" rx="1" fill="#B5472E" opacity="0.9"/>
+
+  <!-- flow beam: trigger → expansion -->
+  <line x1="98" y1="70" x2="150" y2="70" stroke="#33476B" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.28"/>
+  <polyline points="118,61 128,70 118,79" fill="none" stroke="#33476B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+  <polyline points="131,61 141,70 131,79" fill="none" stroke="#33476B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.38"/>
+
+  <!-- Panel 3: the full expansion (larger) -->
+  <rect x="150" y="6" width="106" height="148" rx="6" fill="#ECE5D4" stroke="#D8CDB6" stroke-width="1"/>
+  <circle cx="161" cy="18" r="3" fill="#D8CDB6"/>
+  <circle cx="172" cy="18" r="3" fill="#D8CDB6"/>
+  <circle cx="183" cy="18" r="3" fill="#D8CDB6"/>
+  <!-- indigo right-edge accent (family signature) -->
+  <rect x="250" y="6" width="6" height="148" rx="3" fill="#33476B" opacity="0.18"/>
+  <rect x="252" y="6" width="3" height="148" rx="1.5" fill="#33476B" opacity="0.42"/>
+  <!-- expanded text lines -->
+  <rect x="161" y="34" width="78" height="5" rx="2" fill="#3a4f78" opacity="0.55"/>
+  <rect x="161" y="46" width="58" height="5" rx="2" fill="#C7BEA9" opacity="0.85"/>
+  <rect x="161" y="58" width="82" height="5" rx="2" fill="#C7BEA9" opacity="0.8"/>
+  <rect x="161" y="70" width="68" height="5" rx="2" fill="#C7BEA9" opacity="0.72"/>
+  <!-- a rendered-variable line, amber-highlighted -->
+  <rect x="159" y="82" width="92" height="11" rx="3" fill="#E2B86A" opacity="0.35"/>
+  <rect x="161" y="85.5" width="74" height="5" rx="2" fill="#8a6a36" opacity="0.7"/>
+  <rect x="161" y="100" width="62" height="5" rx="2" fill="#C7BEA9" opacity="0.68"/>
+  <rect x="161" y="112" width="80" height="5" rx="2" fill="#C7BEA9" opacity="0.6"/>
+  <rect x="161" y="124" width="52" height="5" rx="2" fill="#C7BEA9" opacity="0.52"/>
+  <rect x="161" y="136" width="68" height="5" rx="2" fill="#C7BEA9" opacity="0.46"/>
+</g>
+
+<!-- ── TEXT ───────────────────────────────────────────────────── -->
+<text x="292" y="88" font-family="Georgia, 'Times New Roman', serif" font-size="50" font-weight="500" fill="#221C14" letter-spacing="-1.5">TypeOnce<tspan font-family="ui-monospace, monospace" font-size="38" fill="#B5472E" dx="3">▌</tspan></text>
+<text x="294" y="116" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="400" fill="#6E6555">type once · expand everywhere</text>
+<text x="294" y="143" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#94897A">composable YAML packs · role-based profiles · tiny REST API</text>
+<text x="294" y="160" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#94897A">AutoHotkey + macOS clients · self-hosted, offline-first</text>
+
+<!-- goweft badge -->
+<rect x="294" y="173" width="56" height="22" rx="4" fill="#F1EEE6" stroke="#D8CDB6" stroke-width="0.5"/>
+<text x="322" y="188" font-family="monospace" font-size="10" fill="#94897A" text-anchor="middle">goweft</text>
+
+</svg>

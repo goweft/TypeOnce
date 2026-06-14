@@ -1,0 +1,63 @@
+<svg width="1280" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+
+<!-- card -->
+<rect x="0.5" y="0.5" width="799" height="299" rx="12" fill="#F6F1E6" stroke="#E4D8C2" stroke-width="1"/>
+
+<!-- ── flow arrows (indigo) ───────────────────────────────────── -->
+<g stroke="#33476B" stroke-width="1.6" opacity="0.55">
+  <line x1="189" y1="168" x2="218" y2="168" stroke-linecap="round"/>
+  <line x1="383" y1="168" x2="412" y2="168" stroke-linecap="round"/>
+  <line x1="577" y1="168" x2="606" y2="168" stroke-linecap="round"/>
+</g>
+<g fill="#33476B" opacity="0.7">
+  <polygon points="223,168 215,164 215,172"/>
+  <polygon points="417,168 409,164 409,172"/>
+  <polygon points="611,168 603,164 603,172"/>
+</g>
+
+<!-- profiles feeder -> engine -->
+<line x1="303" y1="86" x2="303" y2="118" stroke="#33476B" stroke-width="1.6" stroke-linecap="round" opacity="0.45"/>
+<polygon points="303,122 299,114 307,114" fill="#33476B" opacity="0.6"/>
+
+<!-- ── profiles.yml (feeds the engine) ────────────────────────── -->
+<rect x="223" y="46" width="160" height="40" rx="6" fill="#F1EEE6" stroke="#D8CDB6" stroke-width="1"/>
+<rect x="223" y="46" width="3.5" height="40" rx="1.75" fill="#33476B" opacity="0.42"/>
+<text x="236" y="64" font-family="ui-monospace, monospace" font-size="12" fill="#3a4f78">profiles.yml</text>
+<text x="236" y="78" font-family="system-ui, sans-serif" font-size="10" fill="#94897A">work · personal · ir</text>
+
+<!-- ── Box 1: YAML packs (amber) ──────────────────────────────── -->
+<rect x="29" y="120" width="160" height="96" rx="8" fill="#F7F2E8" stroke="#D8CDB6" stroke-width="1"/>
+<rect x="29" y="120" width="4" height="96" rx="2" fill="#E2B86A" opacity="0.9"/>
+<text x="45" y="150" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#221C14">YAML packs</text>
+<text x="45" y="170" font-family="system-ui, sans-serif" font-size="11" fill="#6E6555">8 composable packs</text>
+<text x="45" y="185" font-family="system-ui, sans-serif" font-size="11" fill="#94897A">essentials · dev · biz · it</text>
+<text x="45" y="199" font-family="system-ui, sans-serif" font-size="11" fill="#94897A">personal · prod · ai-prompts</text>
+
+<!-- ── Box 2: Engine (indigo) ─────────────────────────────────── -->
+<rect x="223" y="120" width="160" height="96" rx="8" fill="#F7F2E8" stroke="#D8CDB6" stroke-width="1"/>
+<rect x="223" y="120" width="4" height="96" rx="2" fill="#33476B" opacity="0.5"/>
+<text x="239" y="150" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#221C14">Engine</text>
+<text x="239" y="170" font-family="system-ui, sans-serif" font-size="11" fill="#6E6555">Mustache render</text>
+<text x="239" y="185" font-family="system-ui, sans-serif" font-size="11" fill="#94897A">profile resolution</text>
+<text x="239" y="199" font-family="system-ui, sans-serif" font-size="11" fill="#94897A">last-wins · raw passthrough</text>
+
+<!-- ── Box 3: REST API (neutral) ──────────────────────────────── -->
+<rect x="417" y="120" width="160" height="96" rx="8" fill="#F7F2E8" stroke="#D8CDB6" stroke-width="1"/>
+<rect x="417" y="120" width="4" height="96" rx="2" fill="#3a4f78" opacity="0.42"/>
+<text x="433" y="150" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#221C14">REST API</text>
+<text x="433" y="170" font-family="ui-monospace, monospace" font-size="11" fill="#6E6555">:8091 (Docker)</text>
+<text x="433" y="185" font-family="ui-monospace, monospace" font-size="10.5" fill="#94897A">/expand · /triggers</text>
+<text x="433" y="199" font-family="ui-monospace, monospace" font-size="10.5" fill="#94897A">/profiles · /health</text>
+
+<!-- ── Box 4: Clients (rust) ──────────────────────────────────── -->
+<rect x="611" y="120" width="160" height="96" rx="8" fill="#F7F2E8" stroke="#D8CDB6" stroke-width="1"/>
+<rect x="611" y="120" width="4" height="96" rx="2" fill="#B5472E" opacity="0.8"/>
+<text x="627" y="150" font-family="system-ui, sans-serif" font-size="15" font-weight="600" fill="#221C14">Clients</text>
+<text x="627" y="170" font-family="system-ui, sans-serif" font-size="11" fill="#6E6555">Windows · AutoHotkey</text>
+<text x="627" y="185" font-family="system-ui, sans-serif" font-size="11" fill="#94897A">macOS · rto</text>
+<text x="627" y="199" font-family="system-ui, sans-serif" font-size="11" fill="#94897A">types into any app</text>
+
+<!-- ── human caption ──────────────────────────────────────────── -->
+<text x="400" y="256" font-family="Georgia, serif" font-size="14" fill="#6E6555" text-anchor="middle" font-style="italic">type <tspan font-family="ui-monospace, monospace" font-style="normal" fill="#8a6a36">;sig</tspan> in any app — get the full signature, rendered and pasted</text>
+
+</svg>
