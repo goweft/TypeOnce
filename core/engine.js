@@ -5,7 +5,7 @@ const EventEmitter = require('events');
 const { execSync } = require('child_process');
 
 class ExpansionEngine extends EventEmitter {
-  constructor() {
+  constructor(options = {}) {
     super();
     this.parser = new PackParser();
     this.renderer = new Renderer();
@@ -14,15 +14,48 @@ class ExpansionEngine extends EventEmitter {
     this.triggers = new Map();
     this.profileManager = null;
     this.activeProfileName = null;
+    // Match trigger keys case-sensitively? Default (false) preserves the historic
+    // lowercase-everything behavior. Set before loadPacks so keys are stored to match.
+    this.caseSensitive = options.caseSensitive || false;
+    // Pack ids already ingested, so loading extra dirs never double-counts a pack.
+    this._ingestedPackIds = new Set();
+    // Pack ids that bypass profile filtering. The user's own packs (loaded from
+    // config's extraPackDirs) are eligible in every profile — profiles only pick
+    // among the bundled packs, they shouldn't hide packs the user explicitly added.
+    this._alwaysEligiblePackIds = new Set();
   }
 
-  loadPacks(packDir) {
+  // Normalize a key for storage/lookup per the caseSensitive setting.
+  _normalizeKey(key) {
+    return this.caseSensitive ? key : key.toLowerCase();
+  }
+
+  loadPacks(packDir, options = {}) {
+    this._ingestPacks(packDir);
+    for (const dir of options.extraDirs || []) {
+      this._ingestPacks(dir, { alwaysEligible: true });
+    }
+    // Profiles live next to the primary pack dir (<packDir>/../profiles.yml).
+    // Load them once, after every dir is ingested, so profile pack-id validation
+    // sees triggers contributed by extra dirs too.
+    this._loadProfiles(packDir);
+    return this.parser.packs;
+  }
+
+  _ingestPacks(packDir, { alwaysEligible = false } = {}) {
     const packs = this.parser.loadPackDirectory(packDir);
 
     for (const pack of packs.values()) {
+      // loadPackDirectory returns the parser's cumulative map; only ingest packs
+      // we haven't seen so extra-dir loads don't re-add an earlier dir's triggers.
+      // First dir wins for a duplicate pack id (bundled packs take precedence).
+      if (this._ingestedPackIds.has(pack.id)) continue;
+      this._ingestedPackIds.add(pack.id);
+      if (alwaysEligible) this._alwaysEligiblePackIds.add(pack.id);
+
       const seenInPack = new Set();
       for (const trigger of pack.triggers) {
-        const key = trigger.key.toLowerCase();
+        const key = this._normalizeKey(trigger.key);
         if (seenInPack.has(key)) {
           // Intra-pack duplicate: a real authoring mistake. Cross-pack duplicates
           // are now legitimate (resolved by profiles) and intentionally not warned.
@@ -39,9 +72,6 @@ class ExpansionEngine extends EventEmitter {
         }
       }
     }
-
-    this._loadProfiles(packDir);
-    return packs;
   }
 
   _loadProfiles(packDir) {
@@ -122,7 +152,7 @@ class ExpansionEngine extends EventEmitter {
 
     const packSet = this._profilePackSet(profileName);
     const pool = packSet
-      ? candidates.filter((c) => packSet.has(c.packId))
+      ? candidates.filter((c) => packSet.has(c.packId) || this._alwaysEligiblePackIds.has(c.packId))
       : candidates;
     if (pool.length === 0) return null;
 
@@ -139,7 +169,7 @@ class ExpansionEngine extends EventEmitter {
 
   expand(triggerKey, context = {}) {
     const profileName = this._effectiveProfile(context);
-    const trigger = this._pickCandidate(triggerKey.toLowerCase(), profileName);
+    const trigger = this._pickCandidate(this._normalizeKey(triggerKey), profileName);
     if (!trigger) return null;
 
     switch (trigger.action.type || 'text') {
@@ -189,7 +219,7 @@ class ExpansionEngine extends EventEmitter {
   // trigger's declared `inputs` before expanding. Returns null if unresolved.
   getTrigger(triggerKey, context = {}) {
     const profileName = this._effectiveProfile(context);
-    return this._pickCandidate(triggerKey.toLowerCase(), profileName);
+    return this._pickCandidate(this._normalizeKey(triggerKey), profileName);
   }
 
   getAllTriggers(context = {}) {
@@ -204,10 +234,12 @@ class ExpansionEngine extends EventEmitter {
 
   findTriggers(query, context = {}) {
     const profileName = this._effectiveProfile(context);
+    // Search stays case-insensitive regardless of caseSensitive — it's a fuzzy
+    // lookup, not the exact-match path that expand() uses.
     const q = query.toLowerCase();
     const results = [];
     for (const key of this.triggers.keys()) {
-      if (!key.includes(q)) continue;
+      if (!key.toLowerCase().includes(q)) continue;
       const winner = this._pickCandidate(key, profileName);
       if (winner) results.push({ key, ...winner });
     }

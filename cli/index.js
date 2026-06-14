@@ -6,6 +6,7 @@ const yaml = require('js-yaml');
 const ExpansionEngine = require('../core/engine');
 const PackParser = require('../core/parser');
 const InputHandler = require('../core/input');
+const { Config, DEFAULTS } = require('../core/config');
 
 // Accumulate repeatable `--input key=value` flags into an object.
 function collectInput(value, previous) {
@@ -26,9 +27,17 @@ const packDir = process.env.PACK_DIR || path.join(__dirname, '..', 'data', 'pack
 const configDir = path.join(__dirname, '..', 'data', 'config');
 const activeProfileFile = path.join(configDir, 'active-profile');
 
-const engine = new ExpansionEngine();
+const config = new Config();
+
+// Extra pack dirs from config let users load their own packs alongside the
+// bundled set without touching the repo. Resolved against cwd; missing dirs skipped.
+const extraDirs = (config.get('extraPackDirs') || [])
+  .map((d) => path.resolve(d))
+  .filter((d) => fs.existsSync(d));
+
+const engine = new ExpansionEngine({ caseSensitive: config.get('caseSensitive') });
 if (fs.existsSync(packDir)) {
-  engine.loadPacks(packDir);
+  engine.loadPacks(packDir, { extraDirs });
 }
 
 // --- active profile persistence ------------------------------------------
@@ -150,6 +159,65 @@ profileCmd
   .action(() => {
     const name = resolveProfileName();
     console.log(name || '(none — all packs eligible)');
+  });
+
+// --- config command group ------------------------------------------------
+
+// Coerce a CLI string to the type of the setting's default (bool / array / string),
+// so `config set caseSensitive true` stores a boolean, not the string "true".
+function coerceConfigValue(key, raw) {
+  const def = DEFAULTS[key];
+  if (typeof def === 'boolean') {
+    if (['true', '1', 'yes', 'on'].includes(raw.toLowerCase())) return true;
+    if (['false', '0', 'no', 'off'].includes(raw.toLowerCase())) return false;
+    throw new InvalidArgumentError(`'${key}' expects a boolean (true/false), got '${raw}'`);
+  }
+  if (Array.isArray(def)) {
+    return raw.split(',').map((s) => s.trim()).filter(Boolean);
+  }
+  return raw;
+}
+
+const configCmd = program
+  .command('config')
+  .description('Manage app settings (orthogonal to profiles)');
+
+configCmd
+  .command('list')
+  .description('Show all settings')
+  .action(() => {
+    const all = config.all();
+    Object.keys(all).forEach((k) => {
+      console.log(`${k} = ${JSON.stringify(all[k])}`);
+    });
+  });
+
+configCmd
+  .command('get <key>')
+  .description('Print a setting')
+  .action((key) => {
+    console.log(JSON.stringify(config.get(key)));
+  });
+
+configCmd
+  .command('set <key> <value>')
+  .description('Set a setting (e.g. caseSensitive true, extraPackDirs a,b)')
+  .action((key, value) => {
+    if (!Object.prototype.hasOwnProperty.call(DEFAULTS, key)) {
+      console.error(`Unknown setting '${key}'. Known: ${Object.keys(DEFAULTS).join(', ')}`);
+      process.exit(1);
+    }
+    let coerced;
+    try {
+      // coerceConfigValue throws on a bad value; caught here because commander
+      // only auto-handles parser errors, not ones thrown from an action handler.
+      coerced = coerceConfigValue(key, value);
+    } catch (err) {
+      console.error(err.message);
+      process.exit(1);
+    }
+    config.set(key, coerced);
+    console.log(`${key} = ${JSON.stringify(coerced)}`);
   });
 
 program

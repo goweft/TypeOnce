@@ -2,9 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const ExpansionEngine = require('../core/engine');
+const { Config } = require('../core/config');
 
 const app = express();
-const engine = new ExpansionEngine();
+const config = new Config();
+const engine = new ExpansionEngine({ caseSensitive: config.get('caseSensitive') });
 const PORT = process.env.API_PORT || 8090;
 
 app.use(cors());
@@ -26,7 +28,13 @@ function logUsage(trigger, result) {
 // loads the same packs — and, via profiles.js's `<packDir>/../profiles.yml`
 // fallback, the same data/profiles.yml — instead of the stale legacy ../packs.
 const packDir = process.env.PACK_DIR || path.join(__dirname, '..', 'data', 'packs');
-engine.loadPacks(packDir);
+
+// Extra pack dirs from config (orthogonal to profiles); resolved, missing skipped.
+const extraDirs = (config.get('extraPackDirs') || [])
+  .map((d) => path.resolve(d))
+  .filter((d) => fs.existsSync(d));
+
+engine.loadPacks(packDir, { extraDirs });
 
 // Activate the boot profile: PROFILE env -> profiles.yml default -> none.
 // With no profiles file and PROFILE unset, this stays null (all packs eligible),
