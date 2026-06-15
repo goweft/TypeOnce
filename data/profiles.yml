@@ -6,6 +6,9 @@
 # ai.prompts (the ;ai* Claude prompt templates) collides with nothing, so it's
 # listed in every profile to keep those prompts available in any context.
 #
+# Note: the personal.quick pack (data/packs/personal.yml) is kept local-only and
+# is not published, so it is intentionally not referenced here.
+#
 # With no profile active (PROFILE unset and this file absent), all packs are
 # eligible and behavior is identical to the pre-profiles engine.
 default: work
@@ -16,7 +19,7 @@ profiles:
     packs: [biz.communication, it.support, dev.toolkit, prod.shortcuts, ai.prompts]
   personal:
     description: Personal
-    packs: [personal.quick, custom.personal, typeonce.essentials, ai.prompts]
+    packs: [custom.personal, typeonce.essentials, ai.prompts]
   ir:
     description: Incident response
     packs: [it.support, dev.toolkit, ai.prompts]   # expand as security packs land

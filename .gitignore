@@ -21,3 +21,6 @@ Thumbs.db
 tmp/
 temp/
 *.tmp
+
+# personal snippets — kept local on the box, never published
+data/packs/personal.yml
