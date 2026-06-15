@@ -1,22 +1,38 @@
 id: "ai.appbuilder"
 name: "App-from-Scratch Prompts"
 version: "0.1.0"
-description: "Model-agnostic prompts for building a new application from scratch — plan first, choose a stack deliberately, then scaffold in reviewable stages. ;appnew prompts you for its inputs; ;appplan and ;appstack use [bracket] placeholders you fill in by hand."
+description: "Model-agnostic prompts for building a new application from scratch — plan first, choose a stack deliberately, then scaffold in reviewable stages. All three prompt you for their inputs."
 
 triggers:
   - key: ";appplan"
     label: "Plan an app before building"
+    inputs:
+      - name: description
+        prompt: "What do you want to build? (one paragraph + who it's for)"
+        required: true
+        default: "[one-paragraph description + who it's for]"
+      - name: requirements
+        prompt: "Hard requirements / must-haves"
+        type: multiline
+        default: "the essential must-haves"
+      - name: constraints
+        prompt: "Constraints (stack, budget, scale, timeline, team, deployment, compliance)"
+        type: multiline
+        default: "no hard constraints — recommend sensible defaults"
+      - name: questions
+        prompt: "Max clarifying questions before planning"
+        type: number
+        default: 3
     action:
       type: "text"
-      raw: true
       template: |
         You are a senior software architect helping me plan a new application before any code is written.
 
-        What I want to build: [one-paragraph description + who it's for]
-        Hard requirements: [must-haves]
-        Constraints: [stack preferences, budget, scale, timeline, team size, deployment target, compliance]
+        What I want to build: {{inputs.description}}
+        Hard requirements: {{inputs.requirements}}
+        Constraints: {{inputs.constraints}}
 
-        First, ask me up to [3] clarifying questions about anything ambiguous, then wait for my answers. After that, produce:
+        First, ask me up to {{inputs.questions}} clarifying questions about anything ambiguous, then wait for my answers. After that, produce:
         1. A short summary of what we're building and the core user flows.
         2. A recommended approach with the main components and a sketch of the data model.
         3. A phased build plan where each milestone is independently runnable and testable.
@@ -25,15 +41,27 @@ triggers:
 
   - key: ";appstack"
     label: "Choose a tech stack (with tradeoffs)"
+    inputs:
+      - name: project
+        prompt: "What are you building?"
+        required: true
+        default: "[what you're building]"
+      - name: priorities
+        prompt: "Priorities (speed to ship, scale, team familiarity, cost, hiring, maintenance)"
+        type: multiline
+        default: "balanced — speed to ship and long-term maintainability"
+      - name: constraints
+        prompt: "Constraints (existing infra, language prefs, deployment target, must-use / must-avoid)"
+        type: multiline
+        default: "no hard constraints"
     action:
       type: "text"
-      raw: true
       template: |
         Help me choose a tech stack for this project. Don't pick one silently — show the tradeoffs.
 
-        Project: [what you're building]
-        Priorities: [e.g. speed to ship, scale, team familiarity, cost, hiring, long-term maintenance]
-        Constraints: [existing infra, language preferences, deployment target, must-use / must-avoid]
+        Project: {{inputs.project}}
+        Priorities: {{inputs.priorities}}
+        Constraints: {{inputs.constraints}}
 
         Recommend 1-2 stacks (frontend, backend, database, hosting, key libraries). For each, give a one-line rationale and a tradeoff note covering learning curve, ecosystem maturity, scalability, and operational cost. Pick a default and explain why. Flag anything in my requirements that decisively pushes the choice one way. Be concrete — name specific frameworks and versions.
 

@@ -1,7 +1,7 @@
 id: "ai.copilot"
 name: "GitHub Copilot Prompts"
 version: "0.1.0"
-description: "VS Code GitHub Copilot Chat prompts, built on its own slash commands, @participants, and # context variables. Paste into the Copilot chat box and fill in the bracketed parts."
+description: "VS Code GitHub Copilot Chat prompts, built on its own slash commands, @participants, and # context variables. Paste into the Copilot chat box; the ones with variables prompt you to fill them in."
 
 triggers:
   - key: ";gcreview"
@@ -23,12 +23,15 @@ triggers:
 
   - key: ";gctest"
     label: "Copilot: generate tests"
+    inputs:
+      - name: framework
+        prompt: "Test framework"
+        default: "the project's existing test framework"
     action:
       type: "text"
-      raw: true
       template: |
         /tests #selection
-        Use [framework]. Cover the happy path, edge cases, error conditions, and boundaries. Use descriptive test names and skip trivial cases. Note any behavior that's hard to test and why.
+        Use {{inputs.framework}}. Cover the happy path, edge cases, error conditions, and boundaries. Use descriptive test names and skip trivial cases. Note any behavior that's hard to test and why.
 
   - key: ";gcexplain"
     label: "Copilot: explain selection"
@@ -49,46 +52,71 @@ triggers:
 
   - key: ";gcoptimize"
     label: "Copilot: optimize selection"
+    inputs:
+      - name: target
+        prompt: "Optimize for"
+        type: select
+        options: ["runtime", "memory", "both"]
+        default: "runtime"
     action:
       type: "text"
-      raw: true
       template: |
-        Optimize #selection for [runtime / memory]. Identify the bottleneck first, then show the change and the complexity before and after. Preserve behavior and note any tradeoffs.
+        Optimize #selection for {{inputs.target}}. Identify the bottleneck first, then show the change and the complexity before and after. Preserve behavior and note any tradeoffs.
 
   - key: ";gcdoc"
     label: "Copilot: document selection"
+    inputs:
+      - name: style
+        prompt: "Doc comment style"
+        type: select
+        options: ["JSDoc", "Google", "NumPy"]
+        default: "JSDoc"
     action:
       type: "text"
-      raw: true
       template: |
-        Add doc comments to #selection in [JSDoc / Google / NumPy] style. Document parameters, return values, errors or exceptions, and any non-obvious behavior. Don't change the code itself.
+        Add doc comments to #selection in {{inputs.style}} style. Document parameters, return values, errors or exceptions, and any non-obvious behavior. Don't change the code itself.
 
   - key: ";gctrace"
     label: "Copilot: trace how something works"
+    inputs:
+      - name: feature
+        prompt: "Which feature or behavior to trace?"
+        required: true
+        default: "[the feature or behavior]"
     action:
       type: "text"
-      raw: true
       template: |
-        @workspace How does [feature or behavior] work? Trace the flow across files from entry point to result, list the key files and functions involved, and summarize the path. Note anything surprising or fragile.
+        @workspace How does {{inputs.feature}} work? Trace the flow across files from entry point to result, list the key files and functions involved, and summarize the path. Note anything surprising or fragile.
 
   - key: ";gcfeature"
     label: "Copilot: implement a feature (Agent/Edit mode)"
+    inputs:
+      - name: feature
+        prompt: "What feature to implement?"
+        required: true
+        default: "[the feature]"
+      - name: requirements
+        prompt: "Requirements (one per line)"
+        type: multiline
+        default: "(list the key requirements)"
     action:
       type: "text"
-      raw: true
       template: |
-        @workspace Implement [feature]. Requirements:
-        - [requirement 1]
-        - [requirement 2]
+        @workspace Implement {{inputs.feature}}. Requirements:
+        {{inputs.requirements}}
         Follow the existing patterns and conventions in #codebase. Add or update tests. Start with a short plan and the list of files you'll touch, and ask before any large or cross-cutting change.
 
   - key: ";gcterminal"
     label: "Copilot: build/debug a shell command"
+    inputs:
+      - name: task
+        prompt: "What do you want to do? (e.g. kill the process on port 8090)"
+        required: true
+        default: "[what you want to do]"
     action:
       type: "text"
-      raw: true
       template: |
-        @terminal [what you want to do, e.g. find and kill the process on port 8090]. Give the exact command for my shell, explain each flag briefly, and warn me before anything destructive.
+        @terminal {{inputs.task}}. Give the exact command for my shell, explain each flag briefly, and warn me before anything destructive.
 
   - key: ";gctestfail"
     label: "Copilot: fix a failing test"
