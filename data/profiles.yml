@@ -3,8 +3,12 @@
 # to be internally collision-free: e.g. `work` gets ;sig from biz.communication,
 # while `personal` gets it from typeonce.essentials.
 #
-# ai.prompts (the ;ai* Claude prompt templates) collides with nothing, so it's
-# listed in every profile to keep those prompts available in any context.
+# The AI helper packs collide with nothing, so they're listed in every profile to
+# keep them available in any context:
+#   ai.prompts     -> ;ai*   task prompts
+#   ai.promptcraft -> ;cp*   prompt-engineering scaffolds
+#   ai.copilot     -> ;gc*   VS Code GitHub Copilot Chat prompts
+#   ai.appbuilder  -> ;app*  build-an-app-from-scratch prompts
 #
 # Note: the personal.quick pack (data/packs/personal.yml) is kept local-only and
 # is not published, so it is intentionally not referenced here.
@@ -16,10 +20,10 @@ default: work
 profiles:
   work:
     description: Work / IT
-    packs: [biz.communication, it.support, dev.toolkit, prod.shortcuts, ai.prompts]
+    packs: [biz.communication, it.support, dev.toolkit, prod.shortcuts, ai.prompts, ai.promptcraft, ai.copilot, ai.appbuilder]
   personal:
     description: Personal
-    packs: [custom.personal, typeonce.essentials, ai.prompts]
+    packs: [custom.personal, typeonce.essentials, ai.prompts, ai.promptcraft, ai.copilot, ai.appbuilder]
   ir:
     description: Incident response
-    packs: [it.support, dev.toolkit, ai.prompts]   # expand as security packs land
+    packs: [it.support, dev.toolkit, ai.prompts, ai.promptcraft, ai.copilot, ai.appbuilder]   # expand as security packs land

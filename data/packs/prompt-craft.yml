@@ -1,0 +1,162 @@
+id: "ai.promptcraft"
+name: "Claude Prompt Craft"
+version: "0.1.0"
+description: "Reusable prompt-engineering scaffolds — the structures that make any Claude prompt more effective. Expanded inline by TypeOnce; fill in the bracketed parts."
+
+triggers:
+  - key: ";cpfull"
+    label: "Complete effective-prompt scaffold"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        You are [ROLE — e.g. a senior incident-response engineer who values precision and flags assumptions].
+
+        <context>
+        [Background the model needs: who this is for, the goal, relevant domain details, prior decisions.]
+        </context>
+
+        <task>
+        [The one specific thing you want done. State it directly and unambiguously.]
+        </task>
+
+        <instructions>
+        - [Rule or step 1]
+        - [Rule or step 2]
+        - If something is unclear or you lack the information, say so instead of guessing.
+        </instructions>
+
+        <example>
+        Input: [a representative input]
+        Output: [the ideal output for that input]
+        </example>
+
+        Think through it step by step in <thinking></thinking> tags, then give your final response in <answer></answer> tags.
+
+  - key: ";cprole"
+    label: "Role / system-prompt line"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        You are [a specific role with relevant expertise — e.g. "a staff backend engineer specializing in distributed systems"]. You are [tone and priorities — e.g. "concise, surface tradeoffs, and call out risky assumptions"]. Answer everything from that perspective.
+
+  - key: ";cpxml"
+    label: "XML-structured prompt skeleton"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        <context>
+        [Background and goal.]
+        </context>
+
+        <task>
+        [What to do.]
+        </task>
+
+        <constraints>
+        [Must / must-not, scope limits, things to avoid.]
+        </constraints>
+
+        <output_format>
+        [The exact shape of the answer you want.]
+        </output_format>
+
+  - key: ";cpcot"
+    label: "Chain-of-thought wrapper"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        [Your question or task here.]
+
+        Before answering, work through it step by step inside <thinking></thinking> tags — consider [the key things to weigh]. Then give your final, concise answer inside <answer></answer> tags.
+
+  - key: ";cpex"
+    label: "Few-shot examples block"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Here are examples of the input and the output I want:
+
+        <examples>
+        <example>
+        Input: [example input 1]
+        Output: [ideal output 1]
+        </example>
+        <example>
+        Input: [example input 2]
+        Output: [ideal output 2]
+        </example>
+        </examples>
+
+        Now produce the output in the same style for:
+        Input: [your real input]
+
+  - key: ";cpfmt"
+    label: "Output-format directive"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        [Your task here.]
+
+        Return the answer as [JSON with keys a, b, c | a markdown table with columns ... | a numbered list, 5 items max]. Output only that — no preamble, no explanation, no closing remarks.
+
+  - key: ";cpdata"
+    label: "Grounded long-document scaffold"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        <document>
+        [Paste the document, data, or source material here.]
+        </document>
+
+        Using only the material above, [your question or task]. First extract the relevant passages into <quotes></quotes> tags, then base your answer in <answer></answer> tags solely on those quotes. If the material doesn't contain the answer, say so plainly rather than inferring.
+
+  - key: ";cpprefill"
+    label: "Response-prefill steer"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        [Your task here.]
+
+        Begin your response immediately with [the exact opening you want — e.g. "{" for raw JSON, or "## Summary"], and include no preamble before it.
+
+  - key: ";cprefine"
+    label: "Critique-then-revise"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Here is a draft:
+
+        <draft>
+        [paste the draft]
+        </draft>
+
+        First critique it against these criteria: [list criteria, e.g. clarity, correctness, completeness]. Put the most important problems in <critique></critique> tags. Then write an improved version in <revision></revision> tags that fixes them, keeping what already works.
+
+  - key: ";cpchain"
+    label: "Staged / prompt-chaining scaffold"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        We'll work in stages. Do only Stage 1 now, then stop and wait for my go-ahead.
+
+        Stage 1: [the first sub-task only] — produce [the intermediate artifact].
+
+        (For context, the later stages will be: [list each remaining stage in one line]. Don't start them yet.)
+
+  - key: ";cpguard"
+    label: "Accuracy guardrail (append to any prompt)"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Ground rules for your answer: rely only on the information I've given and well-established facts. If you're not sure, say "I'm not certain" rather than guessing. Don't invent sources, numbers, quotes, or APIs. If you make an assumption, state it explicitly.

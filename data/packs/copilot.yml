@@ -1,0 +1,108 @@
+id: "ai.copilot"
+name: "GitHub Copilot Prompts"
+version: "0.1.0"
+description: "VS Code GitHub Copilot Chat prompts, built on its own slash commands, @participants, and # context variables. Paste into the Copilot chat box and fill in the bracketed parts."
+
+triggers:
+  - key: ";gcreview"
+    label: "Copilot: code review"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        @workspace Review #selection for correctness, security, and edge cases. For each issue give: severity (blocker / major / minor / nit), the exact location, what's wrong, and a concrete fix. Prioritize correctness and security over style, flag anything you're unsure about instead of guessing, and end with the top 3 things to fix first.
+
+  - key: ";gcfix"
+    label: "Copilot: fix selection"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        /fix #selection
+        Explain the root cause first, then make the smallest change that fixes it. Don't alter behavior elsewhere or reformat unrelated code. If several fixes are plausible, list them before choosing one.
+
+  - key: ";gctest"
+    label: "Copilot: generate tests"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        /tests #selection
+        Use [framework]. Cover the happy path, edge cases, error conditions, and boundaries. Use descriptive test names and skip trivial cases. Note any behavior that's hard to test and why.
+
+  - key: ";gcexplain"
+    label: "Copilot: explain selection"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        /explain #selection
+        Step by step and in plain language. Call out side effects, assumptions, time/space complexity, and anything non-obvious. If you spot a likely bug, flag it.
+
+  - key: ";gcrefactor"
+    label: "Copilot: refactor selection"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Refactor #selection for readability and maintainability without changing behavior or the public interface. Explain each change and why. Separate anything that should be a follow-up from this pass.
+
+  - key: ";gcoptimize"
+    label: "Copilot: optimize selection"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Optimize #selection for [runtime / memory]. Identify the bottleneck first, then show the change and the complexity before and after. Preserve behavior and note any tradeoffs.
+
+  - key: ";gcdoc"
+    label: "Copilot: document selection"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Add doc comments to #selection in [JSDoc / Google / NumPy] style. Document parameters, return values, errors or exceptions, and any non-obvious behavior. Don't change the code itself.
+
+  - key: ";gctrace"
+    label: "Copilot: trace how something works"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        @workspace How does [feature or behavior] work? Trace the flow across files from entry point to result, list the key files and functions involved, and summarize the path. Note anything surprising or fragile.
+
+  - key: ";gcfeature"
+    label: "Copilot: implement a feature (Agent/Edit mode)"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        @workspace Implement [feature]. Requirements:
+        - [requirement 1]
+        - [requirement 2]
+        Follow the existing patterns and conventions in #codebase. Add or update tests. Start with a short plan and the list of files you'll touch, and ask before any large or cross-cutting change.
+
+  - key: ";gcterminal"
+    label: "Copilot: build/debug a shell command"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        @terminal [what you want to do, e.g. find and kill the process on port 8090]. Give the exact command for my shell, explain each flag briefly, and warn me before anything destructive.
+
+  - key: ";gctestfail"
+    label: "Copilot: fix a failing test"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        /fixTestFailure
+        Diagnose why the test is failing: state the root cause, whether the bug is in the test or in the code under test, and the minimal fix. Then show the corrected code.
+
+  - key: ";gccommit"
+    label: "Copilot: commit message from staged changes"
+    action:
+      type: "text"
+      raw: true
+      template: |
+        Write a Conventional Commits message for the staged changes (#changes). Imperative subject line, 72 characters max, with a type prefix (feat / fix / refactor / etc.); then a short body explaining what changed and why, not how.
