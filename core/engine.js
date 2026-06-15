@@ -167,6 +167,20 @@ class ExpansionEngine extends EventEmitter {
       : this.activeProfileName;
   }
 
+  // Merge a trigger's declared input defaults with caller-provided values.
+  // Provided values win; a declared input with no provided value falls back to
+  // its `default` (or ''). Triggers with no `inputs` just echo what was provided,
+  // so existing behavior is unchanged.
+  _resolveInputs(trigger, provided = {}) {
+    const decls = Array.isArray(trigger.inputs) ? trigger.inputs : [];
+    const out = {};
+    for (const d of decls) {
+      if (d && d.name) out[d.name] = d.default !== undefined ? d.default : '';
+    }
+    for (const [k, v] of Object.entries(provided || {})) out[k] = v;
+    return out;
+  }
+
   expand(triggerKey, context = {}) {
     const profileName = this._effectiveProfile(context);
     const trigger = this._pickCandidate(this._normalizeKey(triggerKey), profileName);
@@ -192,7 +206,7 @@ class ExpansionEngine extends EventEmitter {
 
     return this.renderer.render(template, {
       vars: trigger.packVars,
-      inputs: context.inputs || {},
+      inputs: this._resolveInputs(trigger, context.inputs),
     });
   }
 
@@ -202,7 +216,7 @@ class ExpansionEngine extends EventEmitter {
   _expandScript(trigger, context) {
     const command = this.renderer.render(trigger.action.command || '', {
       vars: trigger.packVars,
-      inputs: context.inputs || {},
+      inputs: this._resolveInputs(trigger, context.inputs),
     });
 
     const output = execSync(command, {

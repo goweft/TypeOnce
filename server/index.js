@@ -88,6 +88,9 @@ app.get('/triggers', (req, res) => {
     key: t.key,
     label: t.label,
     packId: t.packId,
+    // Declared input fields (name/prompt/default/type/options/required) so clients
+    // can prompt before calling /expand. Empty array for triggers with no inputs.
+    inputs: Array.isArray(t.inputs) ? t.inputs : [],
   }));
   res.json(triggers);
 });

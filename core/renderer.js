@@ -23,9 +23,10 @@ class Renderer {
   render(template, context = {}) {
     const resolved = {
       ...this.resolveGlobalVars(),
-      ...context.vars,           // keep flat spread for back-compat
-      vars: context.vars || {},  // namespace so {{vars.x}} resolves
-      ...context.inputs,
+      ...context.vars,            // keep flat spread for back-compat
+      vars: context.vars || {},   // namespace so {{vars.x}} resolves
+      ...context.inputs,          // flat inputs (convenience / back-compat)
+      inputs: context.inputs || {}, // namespace so {{inputs.x}} resolves (collision-safe)
     };
 
     // Do not HTML-escape expansion output (was turning / ' < into entities).

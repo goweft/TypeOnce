@@ -1,7 +1,7 @@
 id: "ai.appbuilder"
 name: "App-from-Scratch Prompts"
 version: "0.1.0"
-description: "Model-agnostic prompts for building a new application from scratch — plan first, choose a stack deliberately, then scaffold in reviewable stages. Fill in the bracketed parts."
+description: "Model-agnostic prompts for building a new application from scratch — plan first, choose a stack deliberately, then scaffold in reviewable stages. ;appnew prompts you for its inputs; ;appplan and ;appstack use [bracket] placeholders you fill in by hand."
 
 triggers:
   - key: ";appplan"
@@ -39,17 +39,32 @@ triggers:
 
   - key: ";appnew"
     label: "Scaffold a new app from scratch (staged)"
+    inputs:
+      - name: description
+        prompt: "What are you building? (core features + who it's for)"
+        required: true
+        default: "[what you're building — features + who it's for]"
+      - name: stack
+        prompt: "Stack (language/framework/db/styling + versions; blank to let the model choose)"
+        default: "recommend a stack and confirm with me before starting"
+      - name: constraints
+        prompt: "Constraints (auth, storage, file structure, deps, platform, testing)"
+        type: multiline
+        default: "follow sensible defaults and tell me what you chose"
+      - name: questions
+        prompt: "Max clarifying questions before building"
+        type: number
+        default: 3
     action:
       type: "text"
-      raw: true
       template: |
         You are helping me build a new application from scratch. Build it in stages and stop for my review after each stage — do not generate the whole app in one shot.
 
-        What I'm building: [description + core features + who it's for]
-        Stack: [exact stack — language, framework, database, styling, key libraries + versions; or write: "recommend a stack and confirm with me before starting"]
-        Constraints: [auth approach, data/storage, file and folder structure, no unnecessary dependencies, target platform, testing expectations]
+        What I'm building: {{inputs.description}}
+        Stack: {{inputs.stack}}
+        Constraints: {{inputs.constraints}}
 
-        Stage 0 (plan): Restate the goal in your own words, list your assumptions, ask up to [3] clarifying questions, and propose the project structure and the build stages. Then wait for my go-ahead.
+        Stage 0 (plan): Restate the goal in your own words, list your assumptions, ask up to {{inputs.questions}} clarifying questions, and propose the project structure and the build stages. Then wait for my go-ahead.
 
         Stage 1 (skeleton): Once I confirm, build a minimal runnable skeleton — project setup, entry point, and one end-to-end path through the whole stack (a "hello world" that actually runs). Give me the exact setup and run commands, and how to verify it works before we add features.
 
