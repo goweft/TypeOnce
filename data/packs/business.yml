@@ -12,10 +12,15 @@ vars:
 triggers:
   - key: ";greet"
     label: "Professional greeting"
+    inputs:
+      - name: recipient
+        prompt: "Recipient's name"
+        required: true
+        default: "[Name]"
     action:
       type: "text"
       template: |
-        Dear [Name],
+        Dear {{inputs.recipient}},
         
         I hope this email finds you well.
   
@@ -30,24 +35,43 @@ triggers:
   
   - key: ";meeting"
     label: "Meeting request"
+    inputs:
+      - name: topic
+        prompt: "What's the meeting about?"
+        required: true
+        default: "our project"
+      - name: slot1
+        prompt: "Time slot 1 (e.g. Tuesday at 2:00 PM)"
+        default: "Tuesday at 2:00 PM"
+      - name: slot2
+        prompt: "Time slot 2"
+        default: "Wednesday at 10:00 AM"
+      - name: slot3
+        prompt: "Time slot 3"
+        default: "Thursday at 3:00 PM"
     action:
       type: "text"
       template: |
-        I would like to schedule a meeting to discuss [topic].
+        I would like to schedule a meeting to discuss {{inputs.topic}}.
         
         Would you be available for a 30-minute call this week? Here are a few time slots that work for me:
-        - [Day] at [Time]
-        - [Day] at [Time]
-        - [Day] at [Time]
+        - {{inputs.slot1}}
+        - {{inputs.slot2}}
+        - {{inputs.slot3}}
         
         Please let me know what works best for your schedule.
   
   - key: ";followup"
     label: "Follow-up email"
+    inputs:
+      - name: topic
+        prompt: "What are you following up on?"
+        required: true
+        default: "the proposal"
     action:
       type: "text"
       template: |
-        I wanted to follow up on our previous conversation regarding [topic].
+        I wanted to follow up on our previous conversation regarding {{inputs.topic}}.
         
         Have you had a chance to review the information I sent? I'm happy to answer any questions you might have.
   
@@ -62,12 +86,17 @@ triggers:
   
   - key: ";intro"
     label: "Self introduction"
+    inputs:
+      - name: purpose
+        prompt: "Purpose of contact"
+        required: true
+        default: "a potential collaboration"
     action:
       type: "text"
       template: |
         My name is {{vars.name}} and I'm reaching out from {{vars.company}}.
         
-        I'm contacting you regarding [purpose].
+        I'm contacting you regarding {{inputs.purpose}}.
   
   - key: ";avail"
     label: "Availability response"

@@ -6,9 +6,22 @@ description: "Quick productivity boosters and templates"
 triggers:
   - key: ";task"
     label: "Task template"
+    inputs:
+      - name: description
+        prompt: "Task description"
+        required: true
+        default: "what needs doing"
+      - name: due
+        prompt: "Due (date)"
+        default: "this week"
+      - name: priority
+        prompt: "Priority (1 = highest)"
+        type: select
+        options: ["1", "2", "3", "4", "5"]
+        default: "3"
     action:
       type: "text"
-      template: "[ ] Task: [DESCRIPTION] | Due: [DATE] | Priority: [1-5]"
+      template: "[ ] Task: {{inputs.description}} | Due: {{inputs.due}} | Priority: {{inputs.priority}}"
   
   - key: ";note"
     label: "Quick note"
@@ -74,11 +87,15 @@ triggers:
   
   - key: ";focus"
     label: "Focus block"
+    inputs:
+      - name: end
+        prompt: "Focus block end time"
+        default: "+90 min"
     action:
       type: "text"
       template: |
         🎯 FOCUS BLOCK
-        Time: {{time}} - [END TIME]
+        Time: {{time}} - {{inputs.end}}
         Task: 
         Goal: 
         Distractions off: ✓

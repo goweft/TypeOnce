@@ -23,24 +23,43 @@ triggers:
   
   - key: ";ticket"
     label: "Ticket received"
+    inputs:
+      - name: number
+        prompt: "Ticket number"
+        required: true
+        default: "[NUMBER]"
+      - name: description
+        prompt: "Issue description"
+        type: multiline
+        default: "brief description of the issue"
+      - name: priority
+        prompt: "Priority"
+        type: select
+        options: ["High", "Medium", "Low"]
+        default: "Medium"
     action:
       type: "text"
       template: |
-        Ticket #[NUMBER] received.
+        Ticket #{{inputs.number}} received.
         
-        Issue: [DESCRIPTION]
-        Priority: [HIGH/MEDIUM/LOW]
+        Issue: {{inputs.description}}
+        Priority: {{inputs.priority}}
         
         I'll begin investigating this issue and will update you within 2 hours.
   
   - key: ";resolved"
     label: "Issue resolved"
+    inputs:
+      - name: resolution
+        prompt: "Resolution (what fixed it)"
+        type: multiline
+        default: "the fix that was applied"
     action:
       type: "text"
       template: |
         The issue has been resolved.
         
-        Resolution: [DESCRIPTION]
+        Resolution: {{inputs.resolution}}
         
         Please verify the fix works as expected and let me know if you experience any further issues.
   
