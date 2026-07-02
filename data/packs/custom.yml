@@ -18,7 +18,7 @@ triggers:
     label: "Server IP"
     action:
       type: "text"
-      template: "192.168.7.130"
+      template: "203.0.113.10"
 
   - key: ";docker"
     label: "Docker ps command"

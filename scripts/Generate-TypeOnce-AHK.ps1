@@ -7,7 +7,7 @@
 #   powershell -ExecutionPolicy Bypass -File .\Generate-TypeOnce-AHK.ps1
 # Then double-click the generated TypeOnce-Complete.ahk (AutoHotkey v2 required).
 
-$ServerURL  = "http://192.168.7.130:8091"   # CHANGE to your server IP if different
+$ServerURL  = "http://YOUR-SERVER-IP:8091"   # CHANGE to your server IP
 $OutputFile = "TypeOnce-Complete.ahk"
 
 # Escape a string for embedding inside an AHK *single-quoted* literal: backtick is
@@ -181,7 +181,7 @@ $hotkeys = @"
 ; Win+R         reload this script
 #r::Reload()
 ; Win+Shift+T   open an SSH session to the TypeOnce box
-#+t::Run("wt ssh gostev@192.168.7.130")
+#+t::Run("wt ssh user@YOUR-SERVER-IP")
 "@
 
 $ahk = $header + $helpers + $blocks + $hotkeys
