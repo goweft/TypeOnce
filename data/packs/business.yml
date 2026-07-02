@@ -7,7 +7,7 @@ vars:
   name: "Gostev"
   company: "Your Company"
   phone: "555-0100"
-  email: "gostev@example.com"
+  email: "user@example.com"
 
 triggers:
   - key: ";greet"
